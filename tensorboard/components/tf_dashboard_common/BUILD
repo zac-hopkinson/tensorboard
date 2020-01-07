@@ -10,6 +10,7 @@ tf_ts_library(
         "array-update-helper.ts",
         "dashboard-style.ts",
         "data-loader-behavior.ts",
+        "plottable-style.ts",
         "run-color-style.ts",
         "scrollbar-style.ts",
         "tensorboard-color.ts",
@@ -49,4 +50,23 @@ tf_ts_library(
         "@npm//@types/lodash",
         "@npm//lodash",
     ],
+)
+
+# TODO(tensorboard-team): Consider making a macro out of this.
+# However, Plottable + Bazel makes it extremely gnarly since you cannot refer
+# to file in the @npm//plottable like "@npm//plottable:foo.css".
+genrule(
+    name = "inline_plottable_css",
+    srcs = [
+        "plottable-style.template.ts",
+        "@npm//plottable",
+    ],
+    outs = ["plottable-style.ts"],
+    cmd = " ".join([
+        "$(location //tensorboard/tools:replace_handlebar_with_filecontent)",
+        "$(location plottable-style.template.ts)",
+        "external/npm/node_modules/plottable/plottable.css",
+        "$@",
+    ]),
+    tools = ["//tensorboard/tools:replace_handlebar_with_filecontent"],
 )

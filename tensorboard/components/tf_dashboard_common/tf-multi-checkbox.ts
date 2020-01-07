@@ -18,7 +18,7 @@ import {customElement, property, observe} from '@polymer/decorators';
 import '@polymer/iron-icons';
 import {PaperCheckboxElement} from '@polymer/paper-checkbox';
 import {PaperIconButtonElement} from '@polymer/paper-icon-button';
-import '@polymer/paper-input';
+import '@polymer/paper-input/paper-input';
 import './run-color-style';
 import './scrollbar-style';
 
@@ -208,9 +208,13 @@ export class TfMultiCheckbox extends LegacyElementMixin(PolymerElement) {
         this.regex = r;
       }, 30);
     } else {
-      this.debounce(() => {
-        this.regex = r;
-      }, 150);
+      this.debounce(
+        'setRegexString',
+        () => {
+          this.regex = r;
+        },
+        150
+      );
     }
   };
 
